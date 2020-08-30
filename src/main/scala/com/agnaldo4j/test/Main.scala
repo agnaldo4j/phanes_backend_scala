@@ -4,9 +4,13 @@ import cats.effect.IO
 import com.twitter.finagle.Http
 import com.twitter.finagle.http.{Response, Status}
 import com.twitter.util.Await
+import io.circe.generic.auto._
 import io.finch._
+import io.finch.circe._
 
 object Main extends App with Endpoint.Module[IO] {
+
+  case class Todo(id: Int, title: String, completed: Boolean)
 
   val auth: Endpoint.Compiled[IO] => Endpoint.Compiled[IO] = compiled => {
     Endpoint.Compiled[IO] {
@@ -16,17 +20,18 @@ object Main extends App with Endpoint.Module[IO] {
     }
   }
 
-  val api: Endpoint[IO, String] = get("hello") {
-    Ok("Hello, World!")
+  val api: Endpoint[IO, Todo] = get("hello") {
+    Ok(Todo(1, "Teste", true))
   }
 
-  val apiV2: Endpoint[IO, String] = get("v2" :: "hello") {
-    Ok("Hello, World V2!")
+  val apiV2: Endpoint[IO, Todo] = get("v2" :: path[String]) { title: String =>
+    Ok(Todo(1, title, true))
   }
 
   val filters = Function.chain(Seq(auth))
-  val compiled = filters(Bootstrap.serve[Text.Plain](apiV2 :+: api).compile)
+  val endpoints = Bootstrap.serve[Application.Json](apiV2 :+: api).compile
+  val compiled = filters(endpoints)
+  val service = Endpoint.toService(compiled)
 
-
-  Await.ready(Http.server.serve("0.0.0.0:8080", Endpoint.toService(compiled)))
+  Await.ready(Http.server.serve("0.0.0.0:8080", service))
 }
