@@ -1,8 +1,10 @@
 package com.agnaldo4j.test
 
 import cats.effect.IO
-import com.twitter.finagle.Http
-import com.twitter.finagle.http.{Response, Status}
+import com.twitter.finagle.http.cookie.SameSite
+import com.twitter.finagle.http.filter.Cors
+import com.twitter.finagle.http.{Cookie, Request, Response, Status}
+import com.twitter.finagle.{Http, Service}
 import com.twitter.util.Await
 import io.circe.generic.auto._
 import io.finch._
@@ -21,17 +23,31 @@ object Main extends App with Endpoint.Module[IO] {
   }
 
   val api: Endpoint[IO, Todo] = get("hello") {
-    Ok(Todo(1, "Teste", true))
+    val cookie = new Cookie(name = "token", value = "teste", httpOnly = true, sameSite = SameSite.Lax)
+    Ok(Todo(1, "Teste", true)).withCookie(cookie)
   }
 
   val apiV2: Endpoint[IO, Todo] = get("v2" :: path[String]) { title: String =>
     Ok(Todo(1, title, true))
   }
 
+  val apiV3: Endpoint[IO, Todo] = get("v3" :: path[String] :: path[Int]) { (title: String, age: Int) =>
+    Ok(Todo(age, title, true))
+  }
+
+  val policy: Cors.Policy = Cors.Policy(
+    allowsOrigin = _ => Some("https://theia.com.br"),
+    allowsMethods = _ => Some(Seq("GET", "POST")),
+    allowsHeaders = _ => Some(Seq("Accept")),
+    supportsCredentials = true
+  )
+
   val filters = Function.chain(Seq(auth))
-  val endpoints = Bootstrap.serve[Application.Json](apiV2 :+: api).compile
+  val endpoints = Bootstrap.serve[Application.Json](apiV2 :+: api :+: apiV3).compile
   val compiled = filters(endpoints)
   val service = Endpoint.toService(compiled)
 
-  Await.ready(Http.server.serve("0.0.0.0:8080", service))
+  val corsService: Service[Request, Response] = new Cors.HttpFilter(policy).andThen(service)
+
+  Await.ready(Http.server.serve("0.0.0.0:8080", corsService))
 }
