@@ -1,18 +1,17 @@
-package com.agnaldo4j.test
+package com.agnaldo4j.phanes.api
 
 import cats.effect.IO
+import com.agnaldo4j.phanes.domain.Organization
+import com.twitter.finagle.{Http, Service}
 import com.twitter.finagle.http.cookie.SameSite
 import com.twitter.finagle.http.filter.Cors
 import com.twitter.finagle.http.{Cookie, Request, Response, Status}
-import com.twitter.finagle.{Http, Service}
 import com.twitter.util.Await
 import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
 
 object Main extends App with Endpoint.Module[IO] {
-
-  case class Todo(id: Int, title: String, completed: Boolean)
 
   val auth: Endpoint.Compiled[IO] => Endpoint.Compiled[IO] = compiled => {
     Endpoint.Compiled[IO] {
@@ -22,17 +21,17 @@ object Main extends App with Endpoint.Module[IO] {
     }
   }
 
-  val api: Endpoint[IO, Todo] = get("hello") {
+  val api: Endpoint[IO, Organization] = get("hello") {
     val cookie = new Cookie(name = "token", value = "teste", httpOnly = true, sameSite = SameSite.Lax)
-    Ok(Todo(1, "Teste", true)).withCookie(cookie)
+    Ok(Organization(1, "Teste", true)).withCookie(cookie)
   }
 
-  val apiV2: Endpoint[IO, Todo] = get("v2" :: path[String]) { title: String =>
-    Ok(Todo(1, title, true))
+  val apiV2: Endpoint[IO, Organization] = get("v2" :: path[String]) { title: String =>
+    Ok(Organization(1, title, true))
   }
 
-  val apiV3: Endpoint[IO, Todo] = get("v3" :: path[String] :: path[Int]) { (title: String, age: Int) =>
-    Ok(Todo(age, title, true))
+  val apiV3: Endpoint[IO, Organization] = get("v3" :: path[String] :: path[Int]) { (title: String, age: Int) =>
+    Ok(Organization(age, title, true))
   }
 
   val policy: Cors.Policy = Cors.Policy(
