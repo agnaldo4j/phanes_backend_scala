@@ -22,16 +22,39 @@ object Main extends App with Endpoint.Module[IO] {
   }
 
   val api: Endpoint[IO, Organization] = get("hello") {
-    val cookie = new Cookie(name = "token", value = "teste", httpOnly = true, sameSite = SameSite.Lax)
-    Ok(Organization(1, "Teste", true)).withCookie(cookie)
+    val cookie = new Cookie(
+      name = "token",
+      value = "teste",
+      httpOnly = true,
+      sameSite = SameSite.Lax
+    )
+    Ok(
+      Organization(
+        id = 1,
+        title = "Teste",
+        completed = true
+      )
+    ).withCookie(cookie)
   }
 
-  val apiV2: Endpoint[IO, Organization] = get("v2" :: path[String]) { title: String =>
-    Ok(Organization(1, title, true))
+  val apiV2: Endpoint[IO, Organization] = get("v2" :: path[String]) {
+    title: String =>
+      Ok(
+        Organization(
+          id = 1,
+          title = "Teste",
+          completed = true)
+      )
   }
 
-  val apiV3: Endpoint[IO, Organization] = get("v3" :: path[String] :: path[Int]) { (title: String, age: Int) =>
-    Ok(Organization(age, title, true))
+  val apiV3: Endpoint[IO, Organization] = get("v3" :: path[String] :: path[Int]) {
+    (title: String, age: Int) =>
+      Ok(
+        Organization(
+          id = age,
+          title = title,
+          completed = true)
+      )
   }
 
   val policy: Cors.Policy = Cors.Policy(
