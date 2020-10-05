@@ -19,8 +19,8 @@ lazy val api = (project in file("api"))
     )
   )
 
-lazy val root = (project in file("."))
+lazy val phanes = (project in file("."))
   .aggregate(domain, api)
   .settings(
-    name := "Root"
+    name := "Phanes"
   )
