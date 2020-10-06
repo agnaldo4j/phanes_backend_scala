@@ -2,10 +2,10 @@ package com.agnaldo4j.phanes.api
 
 import cats.effect.IO
 import com.agnaldo4j.phanes.domain.Organization
-import com.twitter.finagle.{Http, Service}
 import com.twitter.finagle.http.cookie.SameSite
 import com.twitter.finagle.http.filter.Cors
 import com.twitter.finagle.http.{Cookie, Request, Response, Status}
+import com.twitter.finagle.{Http, Service}
 import com.twitter.util.Await
 import io.circe.generic.auto._
 import io.finch._
@@ -15,9 +15,12 @@ object Main extends App with Endpoint.Module[IO] {
 
   val auth: Endpoint.Compiled[IO] => Endpoint.Compiled[IO] = compiled => {
     Endpoint.Compiled[IO] {
-      case req if req.getParam("user", "teste") != "teste" => compiled(req)
-      case req if req.uri == "/v2/hello" => compiled(req)
-      case _ => IO.pure(Trace.empty -> Right(Response(Status.Unauthorized)))
+      case req if req.getParam("user", "teste") != "teste" =>
+        compiled(req)
+      case req if req.uri == "/v2/hello" =>
+        compiled(req)
+      case _ =>
+        IO.pure(Trace.empty -> Right(Response(Status.Unauthorized)))
     }
   }
 
@@ -29,11 +32,7 @@ object Main extends App with Endpoint.Module[IO] {
       sameSite = SameSite.Lax
     )
     Ok(
-      Organization(
-        id = 1,
-        title = "Teste",
-        completed = true
-      )
+      Organization(name = "Teste")
     ).withCookie(cookie)
   }
 
@@ -41,21 +40,19 @@ object Main extends App with Endpoint.Module[IO] {
     title: String =>
       Ok(
         Organization(
-          id = 1,
-          title = "Teste",
-          completed = true)
+          name = "Teste"
+        )
       )
   }
 
-  val apiV3: Endpoint[IO, Organization] = get("v3" :: path[String] :: path[Int]) {
-    (title: String, age: Int) =>
+  val apiV3: Endpoint[IO, Organization] =
+    get("v3" :: path[String] :: path[Int]) { (title: String, age: Int) =>
       Ok(
         Organization(
-          id = age,
-          title = title,
-          completed = true)
+          name = title
+        )
       )
-  }
+    }
 
   val policy: Cors.Policy = Cors.Policy(
     allowsOrigin = _ => Some("https://theia.com.br"),
@@ -65,11 +62,13 @@ object Main extends App with Endpoint.Module[IO] {
   )
 
   val filters = Function.chain(Seq(auth))
-  val endpoints = Bootstrap.serve[Application.Json](apiV2 :+: api :+: apiV3).compile
+  val endpoints =
+    Bootstrap.serve[Application.Json](apiV2 :+: api :+: apiV3).compile
   val compiled = filters(endpoints)
   val service = Endpoint.toService(compiled)
 
-  val corsService: Service[Request, Response] = new Cors.HttpFilter(policy).andThen(service)
+  val corsService: Service[Request, Response] =
+    new Cors.HttpFilter(policy).andThen(service)
 
   Await.ready(Http.server.serve("0.0.0.0:8080", corsService))
 }

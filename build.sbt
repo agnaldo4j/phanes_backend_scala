@@ -8,8 +8,20 @@ lazy val domain = (project in file("domain"))
     name := "Domain",
   )
 
-lazy val api = (project in file("api"))
+lazy val usecase = (project in file("usecase"))
   .dependsOn(domain)
+  .settings(
+    name := "UseCase",
+  )
+
+lazy val eventbus = (project in file("eventbus"))
+  .dependsOn(usecase)
+  .settings(
+    name := "EventBus",
+  )
+
+lazy val api = (project in file("api"))
+  .dependsOn(eventbus)
   .settings(
     name := "RestApi",
     libraryDependencies ++= Seq(
