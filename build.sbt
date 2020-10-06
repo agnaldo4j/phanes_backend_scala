@@ -26,7 +26,7 @@ lazy val eventbus = (project in file("eventbus"))
     name := "EventBus",
   )
 
-lazy val api = (project in file("api"))
+lazy val restapi = (project in file("restapi"))
   .dependsOn(eventbus)
   .settings(
     name := "RestApi",
@@ -38,7 +38,7 @@ lazy val api = (project in file("api"))
   )
 
 lazy val phanes = (project in file("."))
-  .aggregate(domain, api)
+  .aggregate(adapters, domain, usecase, eventbus, restapi)
   .settings(
     name := "Phanes"
   )
