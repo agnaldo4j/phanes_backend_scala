@@ -1,7 +1,7 @@
 package com.agnaldo4j.phanes.api
 
 import cats.effect.IO
-import com.agnaldo4j.phanes.domain.Organization
+import com.agnaldo4j.phanes.domain.Domain.Organization
 import com.twitter.finagle.http.cookie.SameSite
 import com.twitter.finagle.http.filter.Cors
 import com.twitter.finagle.http.{Cookie, Request, Response, Status}

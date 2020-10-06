@@ -8,6 +8,12 @@ lazy val domain = (project in file("domain"))
     name := "Domain",
   )
 
+lazy val adapters = (project in file("adapters"))
+  .dependsOn(domain)
+  .settings(
+    name := "Adapters",
+  )
+
 lazy val usecase = (project in file("usecase"))
   .dependsOn(domain)
   .settings(
@@ -15,7 +21,7 @@ lazy val usecase = (project in file("usecase"))
   )
 
 lazy val eventbus = (project in file("eventbus"))
-  .dependsOn(usecase)
+  .dependsOn(adapters, usecase)
   .settings(
     name := "EventBus",
   )

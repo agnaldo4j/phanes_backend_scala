@@ -1,7 +1,6 @@
 package com.agnaldo4j.phanes.usecase
 
-import com.agnaldo4j.phanes.domain.Domain.Id
-import com.agnaldo4j.phanes.domain.{Organization, System}
+import com.agnaldo4j.phanes.domain.Domain.{Id, Organization, System}
 
 object SystemUseCase {
 
