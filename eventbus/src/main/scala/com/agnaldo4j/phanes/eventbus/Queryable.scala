@@ -6,14 +6,14 @@ import com.agnaldo4j.phanes.domain.Event.{
   GetOrganizationByName,
   QueryEvent
 }
-import com.agnaldo4j.phanes.usecase.SystemUseCase
-import com.agnaldo4j.phanes.usecase.SystemUseCase.{
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{
   Fail,
   QuerySuccess,
   SystemQuery,
   GetOrganizationById => GetOrganizationByIdQuery,
   GetOrganizationByName => GetOrganizationByNameQuery
 }
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase
 
 trait Queryable {
   var system: System
