@@ -1,11 +1,7 @@
 package com.agnaldo4j.phanes.usecase.system
 
 import com.agnaldo4j.phanes.domain.Domain.{Id, System}
-import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{
-  Fail,
-  QuerySuccess,
-  SystemResult
-}
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, QuerySuccess, SystemResult}
 
 trait Queryable {
   def execute(query: SystemQuery): SystemResult = {
@@ -29,11 +25,11 @@ trait Queryable {
         organization.name == name
       }
     )
-
-  trait SystemQuery
-
-  case class GetOrganizationByName(name: String, system: System)
-      extends SystemQuery
-
-  case class GetOrganizationById(id: Id, system: System) extends SystemQuery
 }
+
+trait SystemQuery
+
+case class GetOrganizationByName(name: String, system: System)
+  extends SystemQuery
+
+case class GetOrganizationById(id: Id, system: System) extends SystemQuery

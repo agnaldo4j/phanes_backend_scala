@@ -35,10 +35,10 @@ trait Changeable {
       case None => Fail(s"Organization not found with id: $id")
     }
   }
-
-  trait SystemCommand
-
-  case class AddOrganization(name: String, system: System) extends SystemCommand
-
-  case class DeleteOrganization(id: Id, system: System) extends SystemCommand
 }
+
+trait SystemCommand
+
+case class AddOrganization(name: String, system: System) extends SystemCommand
+
+case class DeleteOrganization(id: Id, system: System) extends SystemCommand

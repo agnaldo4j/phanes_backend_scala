@@ -1,18 +1,20 @@
-package com.agnaldo4j.phanes.eventbus
+package com.agnaldo4j.phanes.eventbus.system
 
 import com.agnaldo4j.phanes.adapters.Storage
 import com.agnaldo4j.phanes.domain.Domain.System
 import com.agnaldo4j.phanes.domain.Event
 import com.agnaldo4j.phanes.domain.Event.Event
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase
 import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{
   Fail,
-  Success,
+  Success
+}
+import com.agnaldo4j.phanes.usecase.system.{
   AddOrganization => AddOrganizationCommand,
   DeleteOrganization => DeleteOrganizationCommand
 }
-import com.agnaldo4j.phanes.usecase.system.SystemUseCase
 
-trait Changeable {
+trait SystemChangeable {
   var system: System
   val storage: Storage
 

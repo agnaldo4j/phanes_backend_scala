@@ -1,4 +1,4 @@
-package com.agnaldo4j.phanes.eventbus
+package com.agnaldo4j.phanes.eventbus.system
 
 import com.agnaldo4j.phanes.domain.Domain.{Organization, System}
 import com.agnaldo4j.phanes.domain.Event.{
@@ -6,16 +6,15 @@ import com.agnaldo4j.phanes.domain.Event.{
   GetOrganizationByName,
   QueryEvent
 }
-import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{
-  Fail,
-  QuerySuccess,
-  SystemQuery,
-  GetOrganizationById => GetOrganizationByIdQuery,
-  GetOrganizationByName => GetOrganizationByNameQuery
-}
 import com.agnaldo4j.phanes.usecase.system.SystemUseCase
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, QuerySuccess}
+import com.agnaldo4j.phanes.usecase.system.{
+  SystemQuery,
+  GetOrganizationByName => GetOrganizationByNameQuery,
+  GetOrganizationById => GetOrganizationByIdQuery
+}
 
-trait Queryable {
+trait SystemQueryable {
   var system: System
 
   def execute(event: QueryEvent): QueryResult = {
@@ -55,4 +54,5 @@ trait Queryable {
   object GetOrganizationEmptyResult extends QueryResult
 
   case class QueryResultFail(message: String) extends QueryResult
+
 }

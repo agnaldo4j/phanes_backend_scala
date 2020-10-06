@@ -1,9 +1,9 @@
-package com.agnaldo4j.phanes.usecase
+package com.agnaldo4j.phanes.usecase.organization
 
 import com.agnaldo4j.phanes.domain.Domain.{Organization, Person, Value}
+import com.agnaldo4j.phanes.usecase.organization.OrganizationUseCase.{Fail, OrganizationResult, Success}
 
-object OrganizationUseCase {
-
+trait Changeable {
   def execute(command: OrganizationCommand): OrganizationResult = {
     command match {
       case AddValue(name, organization) =>
@@ -28,18 +28,12 @@ object OrganizationUseCase {
     )
     Success(newState)
   }
-
-  trait OrganizationCommand
-
-  case class AddValue(name: String, organization: Organization)
-      extends OrganizationCommand
-
-  case class AddPerson(name: String, organization: Organization)
-      extends OrganizationCommand
-
-  trait OrganizationResult
-
-  case class Success(organization: Organization) extends OrganizationResult
-
-  case class Fail(message: String) extends OrganizationResult
 }
+
+trait OrganizationCommand
+
+case class AddValue(name: String, organization: Organization)
+  extends OrganizationCommand
+
+case class AddPerson(name: String, organization: Organization)
+  extends OrganizationCommand
