@@ -5,16 +5,21 @@ import com.typesafe.config.Config
 import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
 import javax.sql.DataSource
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.jdbc.repository.config.{
   AbstractJdbcConfiguration,
+  EnableJdbcAuditing,
   EnableJdbcRepositories
 }
+import org.springframework.data.relational.core.mapping.event.BeforeSaveEvent
 
 @Configuration
 @EnableJdbcRepositories
-class PersistenceConfig(@Autowired val phanesConfiguration: PhanesConfiguration)
-    extends AbstractJdbcConfiguration {
+@EnableJdbcAuditing
+class PersistenceConfig(
+    @Autowired val phanesConfiguration: PhanesConfiguration
+) extends AbstractJdbcConfiguration {
 
   import org.springframework.context.annotation.Bean
   import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate
@@ -41,4 +46,16 @@ class PersistenceConfig(@Autowired val phanesConfiguration: PhanesConfiguration)
 
   @Bean def transactionManager(dataSource: DataSource) =
     new DataSourceTransactionManager(dataSource)
+
+  @Bean def idGenerator(): ApplicationListener[BeforeSaveEvent[_]] = {
+    new ApplicationListener[BeforeSaveEvent[_]] {
+      override def onApplicationEvent(event: BeforeSaveEvent[_]): Unit = {
+        import java.util.UUID
+        event.getEntity match {
+          case entity: EventEntity => entity.id = entity.id
+          case _                   =>
+        }
+      }
+    }
+  }
 }
