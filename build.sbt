@@ -3,6 +3,14 @@ ThisBuild / scalaVersion := "2.13.3"
 ThisBuild / version      := "0.1.0-SNAPSHOT"
 ThisBuild / name         := "phanes"
 
+lazy val config = (project in file("config"))
+  .settings(
+    name := "Config",
+    libraryDependencies ++= Seq(
+      "com.typesafe" % "config" % "1.4.0",
+    )
+  )
+
 lazy val domain = (project in file("domain"))
   .settings(
     name := "Domain",
@@ -14,20 +22,31 @@ lazy val adapters = (project in file("adapters"))
     name := "Adapters",
   )
 
-lazy val usecase = (project in file("usecase"))
-  .dependsOn(domain)
+lazy val relationalPersistence = (project in file("relational-persistence"))
+  .dependsOn(config, adapters)
+  .settings(
+    name := "RelationalPersistence",
+    libraryDependencies ++= Seq(
+      "org.postgresql" % "postgresql" % "42.2.17",
+      "com.zaxxer" % "HikariCP" % "3.4.5",
+      "org.springframework.data" % "spring-data-jdbc" % "2.0.4.RELEASE",
+    )
+  )
+
+lazy val useCase = (project in file("usecase"))
+  .dependsOn(adapters)
   .settings(
     name := "UseCase",
   )
 
-lazy val eventbus = (project in file("eventbus"))
-  .dependsOn(adapters, usecase)
+lazy val eventBus = (project in file("eventbus"))
+  .dependsOn(useCase)
   .settings(
     name := "EventBus",
   )
 
-lazy val restapi = (project in file("restapi"))
-  .dependsOn(eventbus)
+lazy val restApi = (project in file("restapi"))
+  .dependsOn(relationalPersistence, eventBus)
   .settings(
     name := "RestApi",
     libraryDependencies ++= Seq(
@@ -38,7 +57,7 @@ lazy val restapi = (project in file("restapi"))
   )
 
 lazy val phanes = (project in file("."))
-  .aggregate(adapters, domain, usecase, eventbus, restapi)
+  .aggregate(config, adapters, domain, relationalPersistence, useCase, eventBus, restApi)
   .settings(
     name := "Phanes"
   )
