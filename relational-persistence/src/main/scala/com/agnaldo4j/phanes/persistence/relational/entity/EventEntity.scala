@@ -1,4 +1,4 @@
-package com.agnaldo4j.phanes.persistence.relational
+package com.agnaldo4j.phanes.persistence.relational.entity
 
 import java.time.LocalDateTime
 import java.util.UUID

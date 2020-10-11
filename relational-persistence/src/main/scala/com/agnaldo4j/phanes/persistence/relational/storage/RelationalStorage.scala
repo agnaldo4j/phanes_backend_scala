@@ -1,7 +1,9 @@
-package com.agnaldo4j.phanes.persistence.relational
+package com.agnaldo4j.phanes.persistence.relational.storage
 
 import com.agnaldo4j.phanes.adapters.Storage
 import com.agnaldo4j.phanes.domain.{Domain, Event}
+import com.agnaldo4j.phanes.persistence.relational.entity.EventEntity
+import com.agnaldo4j.phanes.persistence.relational.repository.EventsRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -12,7 +14,6 @@ class RelationalStorage(
 
   override def log(event: Event.Event): Unit = {
     val entity = EventEntity(
-      id = "0cfbd177-bb27-4442-88dd-f1eca1872f10",
       name = "teste"
     )
     eventsRepository.save(entity)
