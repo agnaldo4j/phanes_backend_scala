@@ -3,14 +3,6 @@ ThisBuild / scalaVersion := "2.13.3"
 ThisBuild / version      := "0.1.0-SNAPSHOT"
 ThisBuild / name         := "phanes"
 
-lazy val config = (project in file("config"))
-  .settings(
-    name := "Config",
-    libraryDependencies ++= Seq(
-      "com.typesafe" % "config" % "1.4.0",
-    )
-  )
-
 lazy val domain = (project in file("domain"))
   .settings(
     name := "Domain",
@@ -20,10 +12,23 @@ lazy val adapters = (project in file("adapters"))
   .dependsOn(domain)
   .settings(
     name := "Adapters",
+    libraryDependencies ++= Seq(
+      "com.typesafe" % "config" % "1.4.0",
+    )
+  )
+
+lazy val config = (project in file("config"))
+  .dependsOn(adapters)
+  .settings(
+    name := "Config",
+    libraryDependencies ++= Seq(
+      "org.springframework" % "spring-context" % "5.2.9.RELEASE",
+      "com.typesafe" % "config" % "1.4.0",
+    )
   )
 
 lazy val relationalPersistence = (project in file("relational-persistence"))
-  .dependsOn(config, adapters)
+  .dependsOn(config)
   .settings(
     name := "RelationalPersistence",
     libraryDependencies ++= Seq(
@@ -50,9 +55,10 @@ lazy val restApi = (project in file("restapi"))
   .settings(
     name := "RestApi",
     libraryDependencies ++= Seq(
+      "org.springframework" % "spring-context" % "5.2.9.RELEASE",
       "com.github.finagle" %% "finchx-core" % "0.32.1",
       "com.github.finagle" %% "finchx-circe" % "0.32.1",
-      "io.circe" %% "circe-generic-extras" % "0.13.0"
+      "io.circe" %% "circe-generic-extras" % "0.13.0",
     )
   )
 

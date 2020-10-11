@@ -2,6 +2,7 @@ package com.agnaldo4j.phanes.api
 
 import cats.effect.IO
 import com.agnaldo4j.phanes.domain.Domain.Organization
+import com.agnaldo4j.phanes.persistence.relational.PersistenceConfig
 import com.twitter.finagle.http.cookie.SameSite
 import com.twitter.finagle.http.filter.Cors
 import com.twitter.finagle.http.{Cookie, Request, Response, Status}
@@ -10,8 +11,15 @@ import com.twitter.util.Await
 import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
+import org.springframework.context.ApplicationContext
+import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 object Main extends App with Endpoint.Module[IO] {
+
+  val context: AnnotationConfigApplicationContext  = new AnnotationConfigApplicationContext()
+  context.scan("com.agnaldo4j.phanes")
+  context.register(classOf[PersistenceConfig])
+  context.refresh()
 
   val auth: Endpoint.Compiled[IO] => Endpoint.Compiled[IO] = compiled => {
     Endpoint.Compiled[IO] {
