@@ -19,14 +19,14 @@ trait Changeable {
   }
 
   private def executeAddValue(name: String, organization: Organization) = {
-    val value = Value(name)
+    val value = Value(name = name)
     val newState =
       organization.copy(values = organization.values ++ List(value))
     Success(newState)
   }
 
   private def executeAddPerson(name: String, organization: Organization) = {
-    val person = Person(name)
+    val person = Person(name = name)
     val newState = organization.copy(people =
       organization.people ++ Map(person.id -> person)
     )

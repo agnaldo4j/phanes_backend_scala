@@ -15,7 +15,7 @@ trait Changeable {
   }
 
   private def executeAddOrganization(name: String, system: System) = {
-    val organization = Organization(name)
+    val organization = Organization(name = name)
     val newState = system.copy(
       organizations =
         system.organizations ++ Map(organization.id -> organization)

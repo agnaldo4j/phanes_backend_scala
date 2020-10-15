@@ -8,8 +8,11 @@ object SystemUseCase extends Changeable with Queryable {
 
   case class Success(system: System) extends SystemResult
 
-  case class QuerySuccess(organization: Option[Organization])
+  case class SingleResult(organization: Option[Organization])
       extends SystemResult
+
+  case class ManyResult(organizations: List[Organization])
+    extends SystemResult
 
   case class Fail(message: String) extends SystemResult
 

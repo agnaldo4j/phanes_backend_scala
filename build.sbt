@@ -42,6 +42,11 @@ lazy val useCase = (project in file("usecase"))
   .dependsOn(adapters)
   .settings(
     name := "UseCase",
+    libraryDependencies ++= Seq(
+      "org.scalactic" %% "scalactic" % "3.2.0",
+      "org.scalatest" %% "scalatest" % "3.2.0" % "test",
+      "org.scalatest" %% "scalatest-freespec" % "3.2.0" % "test"
+    )
   )
 
 lazy val eventBus = (project in file("eventbus"))

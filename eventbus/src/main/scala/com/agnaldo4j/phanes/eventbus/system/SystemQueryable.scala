@@ -7,7 +7,7 @@ import com.agnaldo4j.phanes.domain.Event.{
   QueryEvent
 }
 import com.agnaldo4j.phanes.usecase.system.SystemUseCase
-import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, QuerySuccess}
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, SingleResult}
 import com.agnaldo4j.phanes.usecase.system.{
   SystemQuery,
   GetOrganizationByName => GetOrganizationByNameQuery,
@@ -37,7 +37,7 @@ trait SystemQueryable {
 
   private def executeGetOrganization(query: SystemQuery): QueryResult = {
     SystemUseCase.execute(query) match {
-      case QuerySuccess(result) =>
+      case SingleResult(result) =>
         result match {
           case Some(organization) => GetOrganizationResult(organization)
           case None               => GetOrganizationEmptyResult
