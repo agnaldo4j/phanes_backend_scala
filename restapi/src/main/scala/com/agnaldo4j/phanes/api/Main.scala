@@ -3,7 +3,7 @@ package com.agnaldo4j.phanes.api
 import cats.effect.IO
 import com.agnaldo4j.phanes.adapters.Storage
 import com.agnaldo4j.phanes.domain.Domain.Organization
-import com.agnaldo4j.phanes.domain.Event.AddOrganization
+import com.agnaldo4j.phanes.domain.StorableEvent.AddOrganization
 import com.agnaldo4j.phanes.persistence.relational.PersistenceConfig
 import com.twitter.finagle.http.cookie.SameSite
 import com.twitter.finagle.http.filter.Cors

@@ -2,7 +2,7 @@ package com.agnaldo4j.phanes.eventbus
 
 import com.agnaldo4j.phanes.adapters.Storage
 import com.agnaldo4j.phanes.domain.Domain.System
-import com.agnaldo4j.phanes.domain.Event.Event
+import com.agnaldo4j.phanes.domain.StorableEvent.StorableEvent
 
 trait Storable {
   var system: System
@@ -17,7 +17,7 @@ trait Storable {
     storage.snapshot(system)
   }
 
-  def apply(event: Event)
+  def apply(event: StorableEvent)
 
   private def reloadSystem() {
     system = storage.loadSystem() match {
