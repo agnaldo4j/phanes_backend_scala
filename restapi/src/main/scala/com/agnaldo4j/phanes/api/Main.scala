@@ -1,10 +1,10 @@
 package com.agnaldo4j.phanes.api
 
 import cats.effect.IO
-import com.agnaldo4j.phanes.adapters.Storage
+import com.agnaldo4j.phanes.config.ApplicationPhanesConfig
 import com.agnaldo4j.phanes.domain.Domain.Organization
-import com.agnaldo4j.phanes.domain.StorableEvent.AddOrganization
-import com.agnaldo4j.phanes.persistence.relational.PersistenceConfig
+import com.agnaldo4j.phanes.domain.StorableEvent.{AddOrganization, StorableEvent}
+import com.agnaldo4j.phanes.persistence.quill.QuillStorage
 import com.twitter.finagle.http.cookie.SameSite
 import com.twitter.finagle.http.filter.Cors
 import com.twitter.finagle.http.{Cookie, Request, Response, Status}
@@ -13,16 +13,10 @@ import com.twitter.util.Await
 import io.circe.generic.auto._
 import io.finch._
 import io.finch.circe._
-import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 object Main extends App with Endpoint.Module[IO] {
 
-  val context: AnnotationConfigApplicationContext =
-    new AnnotationConfigApplicationContext()
-
-  context.scan("com.agnaldo4j.phanes")
-  context.register(classOf[PersistenceConfig])
-  context.refresh()
+  lazy val storage = new QuillStorage(ApplicationPhanesConfig.persistence())
 
   val auth: Endpoint.Compiled[IO] => Endpoint.Compiled[IO] = compiled => {
     Endpoint.Compiled[IO] {
@@ -43,20 +37,23 @@ object Main extends App with Endpoint.Module[IO] {
       sameSite = SameSite.Lax
     )
 
-    context.getBean(classOf[Storage]).log(AddOrganization("Nova"))
+    storage.log(AddOrganization("Nova"))
 
     Ok(
       Organization(name = "Teste")
     ).withCookie(cookie)
   }
 
-  val apiV2: Endpoint[IO, Organization] = get("v2" :: path[String]) {
+  val apiV2: Endpoint[IO, List[AddOrganization]] = get("v2" :: path[String]) {
     title: String =>
-      context.getBean(classOf[Storage]).load()
+      val result = storage.load()
       Ok(
-        Organization(
-          name = "Teste"
-        )
+        result.map { t =>
+          t match {
+            case AddOrganization(name) => AddOrganization(name = name)
+            case _ => AddOrganization(name = "Undefined")
+          }
+        }
       )
   }
 

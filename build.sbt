@@ -22,19 +22,17 @@ lazy val config = (project in file("config"))
   .settings(
     name := "Config",
     libraryDependencies ++= Seq(
-      "org.springframework" % "spring-context" % "5.2.9.RELEASE",
       "com.typesafe" % "config" % "1.4.0",
     )
   )
 
-lazy val relationalPersistence = (project in file("relational-persistence"))
+lazy val quillPersistence = (project in file("quill-persistence"))
   .dependsOn(config)
   .settings(
-    name := "RelationalPersistence",
+    name := "QuillPersistence",
     libraryDependencies ++= Seq(
       "org.postgresql" % "postgresql" % "42.2.17",
-      "com.zaxxer" % "HikariCP" % "3.4.5",
-      "org.springframework.data" % "spring-data-jdbc" % "2.0.4.RELEASE",
+      "io.getquill" %% "quill-jdbc" % "3.5.3"
     )
   )
 
@@ -56,11 +54,10 @@ lazy val eventBus = (project in file("eventbus"))
   )
 
 lazy val restApi = (project in file("restapi"))
-  .dependsOn(relationalPersistence, eventBus)
+  .dependsOn(quillPersistence, eventBus)
   .settings(
     name := "RestApi",
     libraryDependencies ++= Seq(
-      "org.springframework" % "spring-context" % "5.2.9.RELEASE",
       "com.github.finagle" %% "finchx-core" % "0.32.1",
       "com.github.finagle" %% "finchx-circe" % "0.32.1",
       "io.circe" %% "circe-generic-extras" % "0.13.0",
@@ -68,7 +65,7 @@ lazy val restApi = (project in file("restapi"))
   )
 
 lazy val phanes = (project in file("."))
-  .aggregate(config, adapters, domain, relationalPersistence, useCase, eventBus, restApi)
+  .aggregate(config, adapters, domain, quillPersistence, useCase, eventBus, restApi)
   .settings(
     name := "Phanes"
   )
