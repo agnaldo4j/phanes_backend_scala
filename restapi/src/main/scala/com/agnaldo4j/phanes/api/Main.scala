@@ -3,7 +3,8 @@ package com.agnaldo4j.phanes.api
 import cats.effect.IO
 import com.agnaldo4j.phanes.config.ApplicationPhanesConfig
 import com.agnaldo4j.phanes.domain.Domain.Organization
-import com.agnaldo4j.phanes.domain.StorableEvent.{AddOrganization, StorableEvent}
+import com.agnaldo4j.phanes.domain.StorableEvent.AddOrganization
+import com.agnaldo4j.phanes.eventbus.EventBus
 import com.agnaldo4j.phanes.persistence.quill.QuillStorage
 import com.twitter.finagle.http.cookie.SameSite
 import com.twitter.finagle.http.filter.Cors
@@ -16,7 +17,11 @@ import io.finch.circe._
 
 object Main extends App with Endpoint.Module[IO] {
 
-  lazy val storage = new QuillStorage(ApplicationPhanesConfig.persistence())
+  lazy val eventBus = EventBus(
+    QuillStorage(
+      ApplicationPhanesConfig.persistence()
+    )
+  )
 
   val auth: Endpoint.Compiled[IO] => Endpoint.Compiled[IO] = compiled => {
     Endpoint.Compiled[IO] {
@@ -37,7 +42,7 @@ object Main extends App with Endpoint.Module[IO] {
       sameSite = SameSite.Lax
     )
 
-    storage.log(AddOrganization("Nova"))
+    eventBus.execute(AddOrganization("Nova"))
 
     Ok(
       Organization(name = "Teste")
@@ -46,12 +51,12 @@ object Main extends App with Endpoint.Module[IO] {
 
   val apiV2: Endpoint[IO, List[AddOrganization]] = get("v2" :: path[String]) {
     title: String =>
-      val result = storage.load()
+      val result = List.empty
       Ok(
         result.map { t =>
           t match {
             case AddOrganization(name) => AddOrganization(name = name)
-            case _ => AddOrganization(name = "Undefined")
+            case _                     => AddOrganization(name = "Undefined")
           }
         }
       )

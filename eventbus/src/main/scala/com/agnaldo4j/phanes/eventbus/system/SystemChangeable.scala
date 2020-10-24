@@ -7,9 +7,9 @@ import com.agnaldo4j.phanes.domain.StorableEvent.{
   DeleteOrganization,
   StorableEvent
 }
-import com.agnaldo4j.phanes.usecase.system.SystemUseCase
 import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, Success}
 import com.agnaldo4j.phanes.usecase.system.{
+  SystemUseCase,
   AddOrganization => AddOrganizationCommand,
   DeleteOrganization => DeleteOrganizationCommand
 }
@@ -19,15 +19,14 @@ trait SystemChangeable {
   val storage: Storage
 
   def execute(event: StorableEvent): EventResult = {
-    val result = event match {
+    storage.log(event)
+    event match {
       case AddOrganization(name) =>
         executeAddOrganization(AddOrganizationCommand(name, system))
       case DeleteOrganization(id) =>
         executeDeleteOrganization(DeleteOrganizationCommand(id, system))
       case _ => EventResultFail(s"Event not found: $event")
     }
-    storage.log(event)
-    result
   }
 
   private def executeAddOrganization(

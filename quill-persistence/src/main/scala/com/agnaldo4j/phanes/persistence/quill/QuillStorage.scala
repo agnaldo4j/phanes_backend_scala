@@ -8,6 +8,10 @@ import com.agnaldo4j.phanes.domain.StorableEvent.{
 }
 import com.typesafe.config.Config
 
+object QuillStorage {
+  def apply(persistenceConfig: Config): QuillStorage = new QuillStorage(persistenceConfig)
+}
+
 class QuillStorage(override val persistenceConfig: Config)
     extends Storage
     with QuillPersistence {

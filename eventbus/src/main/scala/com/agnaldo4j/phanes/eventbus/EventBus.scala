@@ -5,6 +5,10 @@ import com.agnaldo4j.phanes.domain.Domain.System
 import com.agnaldo4j.phanes.domain.StorableEvent.StorableEvent
 import com.agnaldo4j.phanes.eventbus.system.{SystemChangeable, SystemQueryable}
 
+object EventBus {
+  def apply(storage: Storage): EventBus = new EventBus(storage)
+}
+
 class EventBus(val storage: Storage)
     extends Storable
     with SystemQueryable
