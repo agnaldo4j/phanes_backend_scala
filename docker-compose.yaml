@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+  phanes-postgres:
+    image: postgis/postgis:11-3.0-alpine
+    volumes:
+      - ./tmp/db:/var/lib/postgresql/data
+    container_name: phanes-postgresql
+    networks:
+      - phanes_project-network
+    environment:
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: 123456
+        POSTGRES_DB: phanes-test
+        PGDATA: /tmp
+    ports:
+      - "5432:4432"
+  phanes-cache:
+    image: memcached:latest
+    container_name: phanes-cache
+    networks:
+      - phanes_project-network
+    ports:
+      - "11211:21211"
+    restart: always
+  phanes:
+    depends_on:
+        - phanes-postgres
+        - phanes-cache
+        - phanes-api-docs
+    build: .
+    networks:
+      - phanes_project-network
+    ports:
+      - "8080:8080"
+      - "9000:9000"
+    env_file:
+      - env.list
+  phanes-api-docs:
+    build:
+      context: .
+      dockerfile: ApiDocsDockerfile
+    container_name: phanes-api-docs
+    networks:
+      - phanes_project-network
+    ports:
+      - "9090:9090"
+networks:
+  phanes_project-network:
+    driver: bridge
