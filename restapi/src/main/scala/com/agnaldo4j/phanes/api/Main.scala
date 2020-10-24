@@ -3,7 +3,7 @@ package com.agnaldo4j.phanes.api
 import cats.effect.IO
 import com.agnaldo4j.phanes.config.ApplicationPhanesConfig
 import com.agnaldo4j.phanes.domain.Domain.Organization
-import com.agnaldo4j.phanes.domain.StorableEvent.AddOrganization
+import com.agnaldo4j.phanes.domain.StorableEvent.{AddOrganization, StorableEvent}
 import com.agnaldo4j.phanes.eventbus.EventBus
 import com.agnaldo4j.phanes.persistence.quill.QuillStorage
 import com.twitter.finagle.http.cookie.SameSite
@@ -51,7 +51,7 @@ object Main extends App with Endpoint.Module[IO] {
 
   val apiV2: Endpoint[IO, List[AddOrganization]] = get("v2" :: path[String]) {
     title: String =>
-      val result = List.empty
+      val result = List.empty[StorableEvent]
       Ok(
         result.map { t =>
           t match {
