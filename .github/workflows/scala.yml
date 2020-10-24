@@ -1,4 +1,4 @@
-name: Scala CI
+name: phanes_backend_scala
 
 on:
   push:
