@@ -1,18 +1,18 @@
 package com.agnaldo4j.phanes.eventbus.system
 
-import com.agnaldo4j.phanes.domain.Domain.{Id, Organization, System}
+import com.agnaldo4j.phanes.domain.Domain.{Organization, System}
 import com.agnaldo4j.phanes.eventbus.QueryableEvent.{
   GetOrganizationById,
   GetOrganizationByName,
   QueryableEvent
 }
-import com.agnaldo4j.phanes.usecase.system.SystemUseCase
-import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, SingleResult}
-import com.agnaldo4j.phanes.usecase.system.{
+import com.agnaldo4j.phanes.usecase.system.Queryable.{
   SystemQuery,
   GetOrganizationById => GetOrganizationByIdQuery,
   GetOrganizationByName => GetOrganizationByNameQuery
 }
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, SingleResult}
 
 trait SystemQueryable {
   var system: System

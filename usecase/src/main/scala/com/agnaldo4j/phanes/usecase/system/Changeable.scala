@@ -1,6 +1,11 @@
 package com.agnaldo4j.phanes.usecase.system
 
 import com.agnaldo4j.phanes.domain.Domain.{Id, Organization, System}
+import com.agnaldo4j.phanes.usecase.system.Changeable.{
+  AddOrganization,
+  DeleteOrganization,
+  SystemCommand
+}
 import com.agnaldo4j.phanes.usecase.system.SystemUseCase._
 
 trait Changeable {
@@ -37,8 +42,12 @@ trait Changeable {
   }
 }
 
-trait SystemCommand
+object Changeable {
 
-case class AddOrganization(name: String, system: System) extends SystemCommand
+  trait SystemCommand
 
-case class DeleteOrganization(id: Id, system: System) extends SystemCommand
+  case class AddOrganization(name: String, system: System) extends SystemCommand
+
+  case class DeleteOrganization(id: Id, system: System) extends SystemCommand
+
+}

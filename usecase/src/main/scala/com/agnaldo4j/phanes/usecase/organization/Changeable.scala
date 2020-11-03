@@ -1,6 +1,11 @@
 package com.agnaldo4j.phanes.usecase.organization
 
 import com.agnaldo4j.phanes.domain.Domain.{Organization, Person, Value}
+import com.agnaldo4j.phanes.usecase.organization.Changeable.{
+  AddPerson,
+  AddValue,
+  OrganizationCommand
+}
 import com.agnaldo4j.phanes.usecase.organization.OrganizationUseCase.{
   Fail,
   OrganizationResult,
@@ -34,10 +39,14 @@ trait Changeable {
   }
 }
 
-trait OrganizationCommand
+object Changeable {
 
-case class AddValue(name: String, organization: Organization)
-    extends OrganizationCommand
+  trait OrganizationCommand
 
-case class AddPerson(name: String, organization: Organization)
-    extends OrganizationCommand
+  case class AddValue(name: String, organization: Organization)
+      extends OrganizationCommand
+
+  case class AddPerson(name: String, organization: Organization)
+      extends OrganizationCommand
+
+}

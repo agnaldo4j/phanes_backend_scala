@@ -7,16 +7,16 @@ import com.agnaldo4j.phanes.domain.StorableEvent.{
   DeleteOrganization,
   StorableEvent
 }
-import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, Success}
-import com.agnaldo4j.phanes.usecase.system.{
-  SystemUseCase,
+import com.agnaldo4j.phanes.usecase.system.Changeable.{
   AddOrganization => AddOrganizationCommand,
   DeleteOrganization => DeleteOrganizationCommand
 }
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase
+import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{Fail, Success}
 
 trait SystemChangeable {
-  var system: System
   val storage: Storage
+  var system: System
 
   def execute(event: StorableEvent): EventResult = {
     storage.log(event)
@@ -53,9 +53,9 @@ trait SystemChangeable {
 
   trait EventResult
 
+  case class EventResultFail(message: String) extends EventResult
+
   object AddOrganizationSuccess extends EventResult
 
   object DeleteOrganizationSuccess extends EventResult
-
-  case class EventResultFail(message: String) extends EventResult
 }

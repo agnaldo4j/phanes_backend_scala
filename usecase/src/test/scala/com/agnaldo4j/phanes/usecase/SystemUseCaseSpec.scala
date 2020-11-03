@@ -1,6 +1,17 @@
 package com.agnaldo4j.phanes.usecase
 
 import com.agnaldo4j.phanes.domain.Domain.{Id, Organization, System}
+import com.agnaldo4j.phanes.usecase.system.Changeable.{
+  AddOrganization,
+  DeleteOrganization,
+  SystemCommand
+}
+import com.agnaldo4j.phanes.usecase.system.Queryable.{
+  GetAllOrganizations,
+  GetOrganizationById,
+  GetOrganizationByName,
+  SystemQuery
+}
 import com.agnaldo4j.phanes.usecase.system.SystemUseCase.{
   ManyResult,
   SingleResult,
