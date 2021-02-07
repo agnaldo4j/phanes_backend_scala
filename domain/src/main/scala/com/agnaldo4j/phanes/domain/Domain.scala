@@ -1,6 +1,6 @@
 package com.agnaldo4j.phanes.domain
 
-import java.time.LocalDateTime
+import java.time.{Instant}
 import java.util.UUID
 
 object Domain {
@@ -14,21 +14,21 @@ object Domain {
 
   trait Domain {
     val id: Id
-    val created: LocalDateTime
-    val updated: Option[LocalDateTime]
+    val created: Instant
+    val updated: Option[Instant]
   }
 
   case class System(
       id: Id = UUID.randomUUID().toString,
-      created: LocalDateTime = LocalDateTime.now(),
-      updated: Option[LocalDateTime] = None,
+      created: Instant = Instant.now(),
+      updated: Option[Instant] = None,
       organizations: Map[Id, Organization] = Map.empty
   ) extends Domain
 
   case class Organization(
       id: Id = UUID.randomUUID().toString,
-      created: LocalDateTime = LocalDateTime.now(),
-      updated: Option[LocalDateTime] = None,
+      created: Instant = Instant.now(),
+      updated: Option[Instant] = None,
       name: String,
       values: List[Value] = List.empty,
       people: Map[Id, Person] = Map.empty
@@ -36,15 +36,15 @@ object Domain {
 
   case class Value(
       id: Id = UUID.randomUUID().toString,
-      created: LocalDateTime = LocalDateTime.now(),
-      updated: Option[LocalDateTime] = None,
+      created: Instant = Instant.now(),
+      updated: Option[Instant] = None,
       name: String
   ) extends Domain
 
   case class Person(
       id: Id = UUID.randomUUID().toString,
-      created: LocalDateTime = LocalDateTime.now(),
-      updated: Option[LocalDateTime] = None,
+      created: Instant = Instant.now(),
+      updated: Option[Instant] = None,
       name: String,
       givenFeedback: Set[Feedback] = Set.empty,
       receivedFeedback: Set[Feedback] = Set.empty
@@ -52,12 +52,12 @@ object Domain {
 
   case class Feedback(
       id: Id = UUID.randomUUID().toString,
-      created: LocalDateTime = LocalDateTime.now(),
-      updated: Option[LocalDateTime] = None,
+      created: Instant = Instant.now(),
+      updated: Option[Instant] = None,
       values: List[Value],
       from: Person,
       to: Person,
-      date: LocalDateTime,
+      date: Instant,
       description: String
   ) extends Domain
 

@@ -2,11 +2,11 @@ package com.agnaldo4j.phanes.persistence.quill
 
 import com.agnaldo4j.phanes.adapters.Storage
 import com.agnaldo4j.phanes.domain.Domain
-import com.agnaldo4j.phanes.domain.StorableEvent.{
-  AddOrganization,
-  StorableEvent
-}
+import com.agnaldo4j.phanes.domain.StorableEvent.{AddOrganization, StorableEvent}
 import com.typesafe.config.Config
+import io.getquill.MappedEncoding
+
+import java.time.Instant
 
 object QuillStorage {
   def apply(persistenceConfig: Config): QuillStorage = new QuillStorage(persistenceConfig)
@@ -15,6 +15,9 @@ object QuillStorage {
 class QuillStorage(override val persistenceConfig: Config)
     extends Storage
     with QuillPersistence {
+
+  implicit val encodeInstant = MappedEncoding[Instant, Long](_.toEpochMilli)
+  implicit val decodeInstant = MappedEncoding[Long, Instant](Instant.ofEpochMilli(_))
 
   override def log(event: StorableEvent): Unit = {
     import ctx._
